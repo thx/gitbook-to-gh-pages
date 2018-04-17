@@ -5,11 +5,11 @@
  * 执行 node build 会自动提交master代码并切换到gh-pages分支，删除旧文件，从_book里复制新编译的文件到根目录下
  */
 
-import { execSync, spawnSync, exec } from 'child_process'
-import path from 'path'
-import fs from 'fs'
-import fse from 'fs-extra'
-import chalk from 'chalk'
+const { execSync, spawnSync, exec } = require('child_process')
+const path = require('path')
+const fs = require('fs')
+const fse = require('fs-extra')
+const chalk = require('chalk')
 
 const config = {
     stdio: 'inherit'
@@ -34,7 +34,8 @@ function execCommandReturn(command) {
     })
 }
 
-export default async function (options) {
+module.exports = async function (options) {
+
     //获取切换分支前的分支名
     let branchs = await execCommandReturn('git branch')
     let currentBranch = /.*\*\s([\S]+)\s*/.exec(branchs)[1]
