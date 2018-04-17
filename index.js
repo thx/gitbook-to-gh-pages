@@ -2,7 +2,7 @@
  * 请确保在master分支下执行本命令
  * master分支存的是文档 markdown 源码
  * gh-pages存的是编译后的文档，对接github pages
- * 执行 node build 会自动提交master代码并切换到gh-pages分支，删除旧文件，从_book里复制新编译的文件到根目录下
+ * 执行 node publish 会自动提交master代码并切换到gh-pages分支，删除旧文件，从_book里复制新编译的文件到根目录下
  */
 
 const { execSync, spawnSync, exec } = require('child_process')
@@ -58,7 +58,8 @@ module.exports = async function (options) {
     if (rs.status === 1) {
         spawnSync('git', ['checkout', '-b', 'gh-pages'], config)
     }
-
+    
+    //在gh-pages分支下删除无关的源码markdown文件等
     let files = fs.readdirSync(process.cwd())
     const notDeleteFiles = ['.git', '_book', 'node_modules']
     for (const file of files) {
@@ -67,6 +68,7 @@ module.exports = async function (options) {
         }
     }
 
+    //复制_book下所有文件到根目录下
     let copyFiles = fs.readdirSync(path.resolve(process.cwd(), './_book'))
     for (const file of copyFiles) {
         fse.copySync(`${process.cwd()}/_book/${file}`, `${process.cwd()}/${file}`)
