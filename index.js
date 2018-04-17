@@ -36,6 +36,14 @@ function execCommandReturn(command) {
 
 module.exports = async function (options) {
 
+    console.log(chalk.green(`\nⓘ 开始发布文档到github pages...`))
+
+    spawnSync('gitbook', ['build'], config)
+    spawnSync('git', ['add', '-A'], config)
+    spawnSync('git', ['commit', '-m', '"modify book"'], config)
+    spawnSync('git', ['pull', 'origin', 'master'], config)
+    spawnSync('git', ['push', 'origin', 'master'], config)
+
     //获取切换分支前的分支名
     let branchs = await execCommandReturn('git branch')
     let currentBranch = /.*\*\s([\S]+)\s*/.exec(branchs)[1]
@@ -44,14 +52,6 @@ module.exports = async function (options) {
         console.log(chalk.red('\n✘ 请在master分支下执行本命令\n'))
         return
     }
-
-    console.log(chalk.green(`\nⓘ 开始发布文档到github pages...`))
-
-    spawnSync('gitbook', ['build'], config)
-    spawnSync('git', ['add', '-A'], config)
-    spawnSync('git', ['commit', '-m', '"modify book"'], config)
-    spawnSync('git', ['pull', 'origin', 'master'], config)
-    spawnSync('git', ['push', 'origin', 'master'], config)
 
     //切换到gh-pages，首次则创建gh-pages分支
     let rs = spawnSync('git', ['checkout', 'gh-pages'], config)
